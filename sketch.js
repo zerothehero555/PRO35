@@ -1,6 +1,6 @@
 //Create variables here
 var dog,happyDog,database,foodS,foodStock,dogImage,happyDogImage
-var food = 2000000000000000
+var foodS
 
 function preload(){
  dogImage = loadImage("images/dogimg.png")
@@ -14,21 +14,35 @@ function setup() {
   dog.addImage(dogImage);
   dog.scale = 0.2
 
-  //foodStock = database.ref('food')
-  //foodStock.on("value",readStock);
+  foodStock = database.ref('food')
+  foodStock.on("value",readStock);
 }
-
+function readStock(data){
+  foodS = data.val()
+}
 
 function draw() { 
   background(124,252,0);
 
-  if (keyDown("up")) {
-    food = food-1
+  if (keyWentDown("up")) {
+    writeStock(foodS)
+    dog.addImage(happyDogImage)
   }
   drawSprites();
-  text("food: "+ food,200,200)
+  text("food remaining: "+ foodS,200,200)
   //add styles here
 
+}
+function writeStock(x){
+  if(x<=0){
+    x = 0
+  }
+else{
+  x = x-1 
+}
+database.ref('/').update({
+  food:x
+})
 }
 
 
